@@ -3,11 +3,12 @@ using UnityEngine;
 public class Waypoint : MonoBehaviour
 {
     [SerializeField] private bool isPlaceable = false;
-    [SerializeField] private GameObject towerPrefab;
+    [SerializeField] private TowerPrefab tower;
     [SerializeField] private CoordinateLabeler coordinateLabeler;
-    private void Start()
+    private CurrencySystem currencySystem;
+    private void Awake()
     {
-        coordinateLabeler = GetComponentInChildren<CoordinateLabeler>();
+        currencySystem = FindObjectOfType<CurrencySystem>();
     }
     public bool IsPlaceable
     {
@@ -15,9 +16,11 @@ public class Waypoint : MonoBehaviour
     }
     private void OnMouseDown()
     {
-        if(isPlaceable)
+        if(isPlaceable && currencySystem.Currency >= tower.PriceToDeploy)
         {
-            Instantiate(towerPrefab, transform);
+            GameObject newTower = Instantiate(tower.Prefab, transform);
+            newTower.GetComponent<Tower>().TowerPrefab = tower;
+            currencySystem.WithdrawCurrency(tower.PriceToDeploy);
             isPlaceable = false;
             coordinateLabeler.enabled = false;
         }
