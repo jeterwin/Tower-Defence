@@ -15,6 +15,8 @@ public class TowerBullet : MonoBehaviour {
     
     void Update() 
     {
+        if(!target.gameObject.activeInHierarchy)
+            Destroy(gameObject);
         if (target) 
         {        
             transform.LookAt(target);
